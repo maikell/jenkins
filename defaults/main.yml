@@ -1,0 +1,4 @@
+---
+ install_java: true
+ jenkins_service: true
+ jenkins_port: 8080

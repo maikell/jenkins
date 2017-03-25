@@ -1,0 +1,36 @@
+---
+ - name: Making sure java is installed on the system
+   yum: name=java state=installed
+   when: "{{ install_java }}"
+   tags: packages,java
+
+ - name: Jenkins for Centos/RedHat
+   yum_repository:
+      name="Jenkins_Repo"
+      file="jenkins"
+      description="jenkins"
+      baseurl="http://pkg.jenkins.io/redhat"
+      gpgkey="https://jenkins-ci.org/redhat/jenkins-ci.org.key"
+      gpgcheck="yes"
+      state="present"
+   tags: repo
+
+
+ - name: Setting Jenkins listenport
+   lineinfile: dest=/etc/sysconfig/jenkins regexp="JENKINS_PORT=" insertafter="^JENKINS_PORT=" line="JENKINS_PORT={{ jenkins_port }}" backup=yes backrefs=yes
+   register: change        
+   tags: jenkins
+
+ - name: Install Jenkins 
+   yum: name=jenkins state=installed
+   tags: packages,jennkins
+
+ - name: Enabling and starting Jenkins
+   service: name=jenkins state=started enabled=true
+   when: "{{ jenkins_service }}"
+   tags: service,jenkins     
+
+ - name: Restart jenkins when change
+   service: name=jenkins state=restarted
+   when: change.changed
+   tags: service,jenkins        
