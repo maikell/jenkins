@@ -9,7 +9,6 @@
 
  - name: Enabling and starting Jenkins
    service: name=jenkins state=started enabled=true
-   when: "{{ jenkins_service }}"
    tags: service,jenkins     
 
  - name: Restart jenkins when change
